@@ -3177,6 +3177,21 @@ class DataFrame:
                 )
 
         ascending = kwargs.get("ascending", True)
+        
+        # Validate string ascending parameter
+        if isinstance(ascending, str):
+            if ascending not in ("asc", "desc"):
+                raise PySparkValueError(
+                    errorClass="INVALID_PARAMETER_VALUE",
+                    messageParameters={
+                        "arg_name": "ascending",
+                        "arg_value": str(ascending),
+                        "allowed_values": "True, False, 'asc', or 'desc'"
+                    }
+                )
+            # Convert string to boolean for processing
+            ascending = (ascending == "asc")
+        
         if isinstance(ascending, (bool, int)):
             if not ascending:
                 _cols = [c.desc() for c in _cols]
